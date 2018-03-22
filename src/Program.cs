@@ -135,7 +135,6 @@ namespace OpcPublisher
 
                     // opc server configuration options
                     { "lf|logfile=", $"the filename of the logfile to use.\nDefault: './Logs/<applicationname>.log.txt'", (string l) => LogFileName = l },
-                    { "pn|portnum=", $"the server port of the publisher OPC server endpoint.\nDefault: {PublisherServerPort}", (ushort p) => PublisherServerPort = p },
                     { "pa|path=", $"the enpoint URL path part of the publisher OPC server endpoint.\nDefault: '{PublisherServerPath}'", (string a) => PublisherServerPath = a },
                     { "lr|ldsreginterval=", $"the LDS(-ME) registration interval in ms. If 0, then the registration is disabled.\nDefault: {LdsRegistrationInterval}", (int i) => {
                             if (i >= 0)

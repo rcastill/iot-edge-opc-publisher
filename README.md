@@ -381,9 +381,6 @@ The complete usage of the application can be shown using the `--help` command li
                                        Default: none
               --lf, --logfile=VALUE  the filename of the logfile to use.
                                        Default: './Logs/<applicationname>.log.txt'
-              --pn, --portnum=VALUE  the server port of the publisher OPC server
-                                       endpoint.
-                                       Default: 62222
               --pa, --path=VALUE     the enpoint URL path part of the publisher OPC
                                        server endpoint.
                                        Default: '/UA/Publisher'

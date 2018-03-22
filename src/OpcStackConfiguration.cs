@@ -25,12 +25,6 @@ namespace OpcPublisher
             set => _logFileName = value;
         }
 
-        public static ushort PublisherServerPort
-        {
-            get => _publisherServerPort;
-            set => _publisherServerPort = value;
-        }
-
         public static string PublisherServerPath
         {
             get => _publisherServerPath;
@@ -337,7 +331,6 @@ namespace OpcPublisher
             if (_configuration.ServerConfiguration.BaseAddresses.Count == 0)
             {
                 // We do not use the localhost replacement mechanism of the configuration loading, to immediately show the base address here
-                _configuration.ServerConfiguration.BaseAddresses.Add($"opc.tcp://{Utils.GetHostName()}:{_publisherServerPort}{_publisherServerPath}");
             }
             foreach (var endpoint in _configuration.ServerConfiguration.BaseAddresses)
             {
@@ -403,7 +396,6 @@ namespace OpcPublisher
 
         private static string _applicationName = "publisher";
         private static string _logFileName;
-        private static ushort _publisherServerPort = 62222;
         private static string _publisherServerPath = "/UA/Publisher";
         private static int _opcOperationTimeout = 120000;
         private static bool _trustMyself = true;
