@@ -136,17 +136,6 @@ namespace OpcPublisher
                     // opc server configuration options
                     { "lf|logfile=", $"the filename of the logfile to use.\nDefault: './Logs/<applicationname>.log.txt'", (string l) => LogFileName = l },
                     { "pa|path=", $"the enpoint URL path part of the publisher OPC server endpoint.\nDefault: '{PublisherServerPath}'", (string a) => PublisherServerPath = a },
-                    { "lr|ldsreginterval=", $"the LDS(-ME) registration interval in ms. If 0, then the registration is disabled.\nDefault: {LdsRegistrationInterval}", (int i) => {
-                            if (i >= 0)
-                            {
-                                LdsRegistrationInterval = i;
-                            }
-                            else
-                            {
-                                throw new OptionException("The ldsreginterval must be larger or equal 0.", "ldsreginterval");
-                            }
-                        }
-                    },
                     { "ot|operationtimeout=", $"the operation timeout of the publisher OPC UA client in ms.\nDefault: {OpcOperationTimeout}", (int i) => {
                             if (i >= 0)
                             {

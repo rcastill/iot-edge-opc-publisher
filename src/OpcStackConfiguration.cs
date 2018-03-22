@@ -158,12 +158,6 @@ namespace OpcPublisher
             set => _opcIssuerCertStorePath = value;
         }
 
-        public static int LdsRegistrationInterval
-        {
-            get => _ldsRegistrationInterval;
-            set => _ldsRegistrationInterval = value;
-        }
-
         /// <summary>
         /// Configures all OPC stack settings
         /// </summary>
@@ -321,36 +315,6 @@ namespace OpcPublisher
             _configuration.TransportQuotas.OperationTimeout = _opcOperationTimeout;
             Trace($"OperationTimeout set to {_configuration.TransportQuotas.OperationTimeout}");
 
-
-            //
-            // ServerConfiguration
-            //
-            _configuration.ServerConfiguration = new ServerConfiguration();
-
-            // BaseAddresses
-            if (_configuration.ServerConfiguration.BaseAddresses.Count == 0)
-            {
-                // We do not use the localhost replacement mechanism of the configuration loading, to immediately show the base address here
-            }
-            foreach (var endpoint in _configuration.ServerConfiguration.BaseAddresses)
-            {
-                Trace($"Publisher server base address: {endpoint}");
-            }
-
-            // SecurityPolicies
-            // We do not allow security policy SecurityPolicies.None, but always high security
-            ServerSecurityPolicy newPolicy = new ServerSecurityPolicy()
-            {
-                SecurityMode = MessageSecurityMode.SignAndEncrypt,
-                SecurityPolicyUri = SecurityPolicies.Basic256Sha256
-            };
-            _configuration.ServerConfiguration.SecurityPolicies.Add(newPolicy);
-            Trace($"Security policy {newPolicy.SecurityPolicyUri} with mode {newPolicy.SecurityMode} added");
-
-            // MaxRegistrationInterval
-            _configuration.ServerConfiguration.MaxRegistrationInterval = _ldsRegistrationInterval;
-            Trace($"LDS(-ME) registration intervall set to {_ldsRegistrationInterval} ms (0 means no registration)");
-
             //
             // TraceConfiguration
             //
@@ -416,7 +380,6 @@ namespace OpcPublisher
         private static string _opcRejectedCertStorePath = OpcRejectedCertDirectoryStorePathDefault;
         private static string _opcIssuerCertStoreType = Directory;
         private static string _opcIssuerCertStorePath = OpcIssuerCertDirectoryStorePathDefault;
-        private static int _ldsRegistrationInterval = 0;
         private static ApplicationConfiguration _configuration;
     }
 }
