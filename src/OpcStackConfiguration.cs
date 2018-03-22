@@ -25,12 +25,6 @@ namespace OpcPublisher
             set => _logFileName = value;
         }
 
-        public static string PublisherServerPath
-        {
-            get => _publisherServerPath;
-            set => _publisherServerPath = value;
-        }
-
         public static int OpcOperationTimeout
         {
             get => _opcOperationTimeout;
@@ -360,7 +354,6 @@ namespace OpcPublisher
 
         private static string _applicationName = "publisher";
         private static string _logFileName;
-        private static string _publisherServerPath = "/UA/Publisher";
         private static int _opcOperationTimeout = 120000;
         private static bool _trustMyself = true;
         private static int _opcStackTraceMask = Utils.TraceMasks.Error | Utils.TraceMasks.Security | Utils.TraceMasks.StackTrace | Utils.TraceMasks.StartStop;
