@@ -185,7 +185,7 @@ namespace OpcPublisher
             // Passed in as command line argument
             _configuration.ApplicationName = _applicationName;
             _configuration.ApplicationUri = $"urn:{Utils.GetHostName()}:{_configuration.ApplicationName}:microsoft:";
-            _configuration.ProductUri = "https://github.com/Azure/iot-edge-opc-publisher";
+            _configuration.ProductUri = "https://github.com/rcastill/iot-edge-opc-publisher";
             _configuration.ApplicationType = ApplicationType.ClientAndServer;
 
 
