@@ -394,21 +394,6 @@ namespace OpcPublisher
                     PublisherOpcApplicationConfiguration.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(CertificateValidator_Default);
                 }
 
-                // start our server interface
-                try
-                {
-                    Trace($"Starting server on endpoint {PublisherOpcApplicationConfiguration.ServerConfiguration.BaseAddresses[0].ToString()} ...");
-                    _publisherServer = new PublisherServer();
-                    _publisherServer.Start(PublisherOpcApplicationConfiguration);
-                    Trace("Server started.");
-                }
-                catch (Exception e)
-                {
-                    Trace(e, "Failed to start Publisher OPC UA server.");
-                    Trace("exiting...");
-                    return;
-                }
-
                 // read telemetry configuration file
                 PublisherTelemetryConfiguration.Init();
                 if (!await PublisherTelemetryConfiguration.ReadConfigAsync())
@@ -437,11 +422,6 @@ namespace OpcPublisher
 
                 // kick off the task to maintain all sessions
                 Task sessionConnectorAsync = Task.Run(async () => await SessionConnectorAsync(ShutdownTokenSource.Token));
-
-                // Show notification on session events
-                _publisherServer.CurrentInstance.SessionManager.SessionActivated += ServerEventStatus;
-                _publisherServer.CurrentInstance.SessionManager.SessionClosing += ServerEventStatus;
-                _publisherServer.CurrentInstance.SessionManager.SessionCreated += ServerEventStatus;
 
                 // initialize publisher diagnostics
                 Diagnostics.Init();
@@ -476,9 +456,6 @@ namespace OpcPublisher
 
                 // Wait for session connector completion
                 await sessionConnectorAsync;
-
-                // stop the server
-                _publisherServer.Stop();
 
                 // Clean up Publisher sessions
                 await SessionShutdownAsync();
@@ -696,7 +673,6 @@ namespace OpcPublisher
         }
 
         private static uint _publisherShutdownWaitPeriod = 10;
-        private static PublisherServer _publisherServer;
         private static bool _opcTraceInitialized = false;
         private static int _publisherSessionConnectWaitSec = 10;
         private static bool _noShutdown = false;

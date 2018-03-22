@@ -122,7 +122,7 @@ namespace OpcPublisher
                 }
                 if (expandedNodeId != null)
                 {
-                    if (ConfigExpandedNodeId.NamespaceUri != null && 
+                    if (ConfigExpandedNodeId.NamespaceUri != null &&
                         ConfigExpandedNodeId.NamespaceUri.Equals(expandedNodeId.NamespaceUri, StringComparison.OrdinalIgnoreCase) &&
                         ConfigExpandedNodeId.Identifier.ToString().Equals(expandedNodeId.Identifier.ToString(), StringComparison.OrdinalIgnoreCase))
                     {
@@ -996,7 +996,7 @@ namespace OpcPublisher
 
                 // check if there is already a subscription with the same publishing interval, which can be used to monitor the node
                 OpcSubscription opcSubscription = OpcSubscriptions.FirstOrDefault(s => s.RequestedPublishingInterval == opcPublishingInterval);
-                
+
                 // if there was none found, create one
                 if (opcSubscription == null)
                 {
@@ -1200,10 +1200,10 @@ namespace OpcPublisher
             return false;
         }
 
-    /// <summary>
-    /// Shutdown the current session if it is connected.
-    /// </summary>
-    public async Task ShutdownAsync()
+        /// <summary>
+        /// Shutdown the current session if it is connected.
+        /// </summary>
+        public async Task ShutdownAsync()
         {
             try
             {
