@@ -228,8 +228,8 @@ namespace OpcPublisher
                         ExponentialBackoff exponentialRetryPolicy = new ExponentialBackoff(int.MaxValue, TimeSpan.FromMilliseconds(2), TimeSpan.FromMilliseconds(1024), TimeSpan.FromMilliseconds(3));
                         _iotHubClient.SetRetryPolicy(exponentialRetryPolicy);
                         await _iotHubClient.OpenAsync();
-
-                        ContinueInitializing();
+                        // Call extended initializer procedure
+                        await ContinueInitializing();
                     }
                     else
                     {
