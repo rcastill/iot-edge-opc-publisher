@@ -360,7 +360,7 @@ namespace OpcPublisher
     /// <summary>
     /// Class to manage OPC sessions.
     /// </summary>
-    public class OpcSession
+    public partial class OpcSession
     {
         public enum SessionState
         {
