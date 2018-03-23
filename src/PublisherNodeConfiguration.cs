@@ -15,6 +15,8 @@ namespace OpcPublisher
     using static OpcPublisher.Workarounds.TraceWorkaround;
     using static OpcStackConfiguration;
 
+    using Microsoft.Azure.Devices.Shared;
+
     public static class PublisherNodeConfiguration
     {
         public static SemaphoreSlim PublisherNodeConfigurationSemaphore;
@@ -134,6 +136,59 @@ namespace OpcPublisher
             PublisherNodeConfigurationSemaphore = null;
             PublisherNodeConfigurationFileSemaphore.Dispose();
             PublisherNodeConfigurationFileSemaphore = null;
+        }
+
+        public static async Task<bool> LoadConfigFromDesiredPropertiesAsync(TwinCollection desiredProperties)
+        {
+            try
+            {
+                await PublisherNodeConfigurationSemaphore.WaitAsync();
+                Trace("Attemtping to load node configuration from desired properties:");
+                Trace(desiredProperties.ToJson(Formatting.Indented));
+                try
+                {
+                    await PublisherNodeConfigurationFileSemaphore.WaitAsync();
+                    _configurationFileEntries = JsonConvert.DeserializeObject<List<PublisherConfigurationFileEntry>>(
+                        desiredProperties.ToJson()
+                    );
+                }
+                finally
+                {
+                    PublisherNodeConfigurationFileSemaphore.Release();
+                }
+                Trace($"Loaded {_configurationFileEntries.Count} config file entry/entries.");
+
+                foreach (var publisherConfigFileEntry in _configurationFileEntries)
+                {
+                    if (publisherConfigFileEntry.NodeId == null)
+                    {
+                        // new node configuration syntax.
+                        foreach (var opcNode in publisherConfigFileEntry.OpcNodes)
+                        {
+                            ExpandedNodeId expandedNodeId = ExpandedNodeId.Parse(opcNode.ExpandedNodeId);
+                            _nodePublishingConfiguration.Add(new NodePublishingConfiguration(expandedNodeId, publisherConfigFileEntry.EndpointUri, publisherConfigFileEntry.UseSecurity, opcNode.OpcSamplingInterval ?? OpcSamplingInterval, opcNode.OpcPublishingInterval ?? OpcPublishingInterval));
+                        }
+                    }
+                    else
+                    {
+                        // NodeId (ns=) format node configuration syntax using default sampling and publishing interval.
+                        _nodePublishingConfiguration.Add(new NodePublishingConfiguration(publisherConfigFileEntry.NodeId, publisherConfigFileEntry.EndpointUri, publisherConfigFileEntry.UseSecurity, OpcSamplingInterval, OpcPublishingInterval));
+                        // give user a warning that the syntax is obsolete
+                        Trace($"Please update the syntax of the configuration file and use ExpandedNodeId instead of NodeId property name for node with identifier '{publisherConfigFileEntry.NodeId.ToString()}' on EndpointUrl '{publisherConfigFileEntry.EndpointUri.AbsoluteUri}'.");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Trace(e, "Loading of the node configuration file failed. Does the file exist and has correct syntax?");
+                Trace("exiting...");
+                return false;
+            }
+            finally
+            {
+                PublisherNodeConfigurationSemaphore.Release();
+            }
+            return true;
         }
 
         /// <summary>

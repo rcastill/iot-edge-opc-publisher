@@ -60,7 +60,7 @@ namespace OpcPublisher
                 // command line options configuration
                 Mono.Options.OptionSet options = new Mono.Options.OptionSet {
                     // Publishing configuration options
-                    { "pf|publishfile=", $"the filename to configure the nodes to publish.\nDefault: '{PublisherNodeConfigurationFilename}'", (string p) => PublisherNodeConfigurationFilename = p },
+                    { "pf|publishfile=", $"the filename to configure the nodes to publish (fallback procedure).\nDefault: '{PublisherNodeConfigurationFilename}'", (string p) => PublisherNodeConfigurationFilename = p },
                     { "tc|telemetryconfigfile=", $"the filename to configure the ingested telemetry\nDefault: '{PublisherTelemetryConfigurationFilename}'", (string p) => PublisherTelemetryConfigurationFilename = p },
                     { "sd|shopfloordomain=", $"the domain of the shopfloor. if specified this domain is appended (delimited by a ':' to the 'ApplicationURI' property when telemetry is sent to IoTHub.\n" +
                             "The value must follow the syntactical rules of a DNS hostname.\nDefault: not set", (string s) => {
@@ -402,6 +402,7 @@ namespace OpcPublisher
                 }
 
                 // read node configuration file
+                // read it before loading desired properties in case of misconfigurations
                 PublisherNodeConfiguration.Init();
                 if (!await PublisherNodeConfiguration.ReadConfigAsync())
                 {

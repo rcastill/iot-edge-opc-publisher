@@ -24,7 +24,7 @@ namespace OpcPublisher
     /// <summary>
     /// Class to handle all IoTHub communication.
     /// </summary>
-    public class IotHubMessaging
+    public partial class IotHubMessaging
     {
         public static string IotDeviceCertDirectoryStorePathDefault => "CertificateStores/IoTHub";
 
@@ -228,6 +228,8 @@ namespace OpcPublisher
                         ExponentialBackoff exponentialRetryPolicy = new ExponentialBackoff(int.MaxValue, TimeSpan.FromMilliseconds(2), TimeSpan.FromMilliseconds(1024), TimeSpan.FromMilliseconds(3));
                         _iotHubClient.SetRetryPolicy(exponentialRetryPolicy);
                         await _iotHubClient.OpenAsync();
+
+                        ContinueInitializing();
                     }
                     else
                     {
@@ -527,7 +529,7 @@ namespace OpcPublisher
                             jsonMessageSize = Encoding.UTF8.GetByteCount(jsonMessage.ToString());
 
                             // sanity check that the user has set a large enough IoTHub messages size
-                            if ((_iotHubMessageSize > 0 && jsonMessageSize > _iotHubMessageSize ) || (_iotHubMessageSize == 0 && jsonMessageSize > iotHubMessageBufferSize))
+                            if ((_iotHubMessageSize > 0 && jsonMessageSize > _iotHubMessageSize) || (_iotHubMessageSize == 0 && jsonMessageSize > iotHubMessageBufferSize))
                             {
                                 Trace(Utils.TraceMasks.Error, $"There is a telemetry message (size: {jsonMessageSize}), which will not fit into an IoTHub message (max size: {iotHubMessageBufferSize}].");
                                 Trace(Utils.TraceMasks.Error, $"Please check your IoTHub message size settings. The telemetry message will be discarded silently. Sorry:(");

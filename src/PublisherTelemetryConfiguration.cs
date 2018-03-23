@@ -507,7 +507,7 @@ namespace OpcPublisher
         public static async Task<bool> ReadConfigAsync()
         {
             // initialize with the default server telemetry configuration
-           InitializePublisherDefaultEndpointTelemetryConfiguration();
+            InitializePublisherDefaultEndpointTelemetryConfiguration();
 
             // return if there is no configuration file specified
             if (string.IsNullOrEmpty(_publisherTelemetryConfigurationFilename))
